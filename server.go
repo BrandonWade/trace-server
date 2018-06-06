@@ -4,15 +4,26 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
+	"github.com/BrandonWade/trace-server/connection"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+)
+
+var (
+	bufferSize int
 )
 
 func init() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("error loading .env file")
+	}
+
+	bufferSize, err = strconv.Atoi(os.Getenv("TRACE_BUFFER_SIZE"))
+	if err != nil {
+		log.Fatal("error reading buffer size")
 	}
 }
 
@@ -27,6 +38,6 @@ func main() {
 
 // SyncHandler - Handler for incoming sync requests
 func SyncHandler(w http.ResponseWriter, r *http.Request) {
-	// TODO: Implement
-	w.Write([]byte("Trace"))
+	conn := connection.New(bufferSize)
+	conn.Open(&w, r)
 }
