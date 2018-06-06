@@ -3,6 +3,7 @@ package contact
 import (
 	"log"
 	"net/http"
+	"net/url"
 
 	"github.com/gorilla/websocket"
 )
@@ -27,10 +28,23 @@ func (c *Connection) Open(w *http.ResponseWriter, r *http.Request) {
 		WriteBufferSize: c.buffSize,
 	}
 
-	c.conn, err := upgrader.Upgrade(*w, r, nil)
+	conn, err := upgrader.Upgrade(*w, r, nil)
 	if err != nil {
-		log.Fatal("error opening websocket", err)
+		log.Fatal("error upgrading http request into websocket", err)
 	}
+
+	c.conn = conn
+}
+
+// Dial - sends an http request to be upgraded to a websocket
+func (c *Connection) Dial(host string) {
+	url := url.URL{Scheme: "ws", Host: host}
+	conn, _, err := websocket.DefaultDialer.Dial(url.String(), nil)
+	if err != nil {
+		log.Fatal("error sending websocket http request")
+	}
+
+	c.conn = conn
 }
 
 // Close - closes an open websocket connection
