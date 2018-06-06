@@ -6,7 +6,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/BrandonWade/trace-server/connection"
+	"github.com/BrandonWade/contact"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
@@ -38,6 +38,6 @@ func main() {
 
 // SyncHandler - Handler for incoming sync requests
 func SyncHandler(w http.ResponseWriter, r *http.Request) {
-	conn := connection.New(bufferSize)
+	conn := contact.NewConnection(bufferSize)
 	conn.Open(&w, r)
 }
