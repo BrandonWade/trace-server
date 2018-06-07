@@ -28,7 +28,7 @@ func init() {
 }
 
 func main() {
-	port := os.Getenv("TRACE_SERVER_PORT")
+	port := ":" + os.Getenv("TRACE_SERVER_PORT")
 
 	r := mux.NewRouter()
 	r.HandleFunc("/sync", SyncHandler)
