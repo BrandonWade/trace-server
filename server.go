@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/BrandonWade/contact"
@@ -39,5 +40,20 @@ func main() {
 // SyncHandler - Handler for incoming sync requests
 func SyncHandler(w http.ResponseWriter, r *http.Request) {
 	conn := contact.NewConnection(bufferSize)
+
 	conn.Open(&w, r)
+	defer conn.Close()
+
+	clientFiles := make(map[string]bool)
+	for {
+		msg := contact.Message{}
+
+		conn.ReadJSON(&msg)
+		if msg.IsEmpty() {
+			break
+		}
+
+		relPath := filepath.ToSlash(msg.Body)
+		clientFiles[relPath] = true
+	}
 }
