@@ -5,7 +5,13 @@
   branch = "master"
   name = "github.com/BrandonWade/contact"
   packages = ["."]
-  revision = "f877eb27de944e24667675d26fb22ff22df59f1a"
+  revision = "7bd7d47e1374275f3869583abcbdd46fa9547775"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/BrandonWade/synth"
+  packages = ["."]
+  revision = "8ec5abf4a992433f314101d4508b1085855a29c0"
 
 [[projects]]
   name = "github.com/gorilla/context"
@@ -34,6 +40,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e3a1f9c7029df7e5652d22740313be79970916ec2583e42efdea609e94084181"
+  inputs-digest = "cbfdddd10382220fdbd2f432a219457ae2b16aae0cc2d9cdd8a6e9a505e80967"
   solver-name = "gps-cdcl"
   solver-version = 1

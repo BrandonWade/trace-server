@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -8,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/BrandonWade/contact"
+	"github.com/BrandonWade/synth"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
@@ -44,6 +46,7 @@ func SyncHandler(w http.ResponseWriter, r *http.Request) {
 	conn.Open(&w, r)
 	defer conn.Close()
 
+	// Get the list of files from the client
 	clientFiles := make(map[string]bool)
 	for {
 		msg := contact.Message{}
@@ -56,4 +59,12 @@ func SyncHandler(w http.ResponseWriter, r *http.Request) {
 		relPath := filepath.ToSlash(msg.Body)
 		clientFiles[relPath] = true
 	}
+
+	// Get the list of files from the filesystem
+	localFiles, err := synth.Scan(os.Getenv("TEST_DIR"))
+	if err != nil {
+		log.Fatal("error retrieving local file list")
+	}
+
+	fmt.Printf("%+v", localFiles)
 }
