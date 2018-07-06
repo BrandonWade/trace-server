@@ -64,6 +64,10 @@ func (c *Connection) WriteJSON(m interface{}) {
 	c.conn.WriteJSON(m)
 }
 
+func (c *Connection) Write(s string) {
+	c.conn.WriteMessage(websocket.TextMessage, []byte(s))
+}
+
 // WriteBinary - writes a binary string to the websocket connection
 func (c *Connection) WriteBinary(data []byte) {
 	c.conn.WriteMessage(websocket.BinaryMessage, data)

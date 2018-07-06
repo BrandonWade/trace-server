@@ -5,7 +5,13 @@
   branch = "master"
   name = "github.com/BrandonWade/contact"
   packages = ["."]
-  revision = "7bd7d47e1374275f3869583abcbdd46fa9547775"
+  revision = "19d04f362121225760cd5e6eaba198a9a63badb4"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/BrandonWade/godash"
+  packages = ["."]
+  revision = "5f0ada8d4c9eb037d8cb3ede3ffc833e21858c4f"
 
 [[projects]]
   branch = "master"
@@ -40,6 +46,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cbfdddd10382220fdbd2f432a219457ae2b16aae0cc2d9cdd8a6e9a505e80967"
+  inputs-digest = "9daf8aff5d1ea2b79655167ded8cbffbd6e5579ad4fe40de42933a565f362ae8"
   solver-name = "gps-cdcl"
   solver-version = 1

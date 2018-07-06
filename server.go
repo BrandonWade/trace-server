@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -9,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/BrandonWade/contact"
+	"github.com/BrandonWade/godash"
 	"github.com/BrandonWade/synth"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -47,7 +47,7 @@ func SyncHandler(w http.ResponseWriter, r *http.Request) {
 	defer conn.Close()
 
 	// Get the list of files from the client
-	clientFiles := make(map[string]bool)
+	clientFiles := []string{}
 	for {
 		msg := contact.Message{}
 
@@ -56,8 +56,8 @@ func SyncHandler(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		relPath := filepath.ToSlash(msg.Body)
-		clientFiles[relPath] = true
+		path := filepath.ToSlash(msg.Body)
+		clientFiles = append(clientFiles, path)
 	}
 
 	// Get the list of files from the filesystem
@@ -66,5 +66,15 @@ func SyncHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("error retrieving local file list")
 	}
 
-	fmt.Printf("%+v", localFiles)
+	// Filter out unwanted files and files that are already on the client
+	// TODO: Add support for setting filters
+	filters := []string{"xyz"}
+	filters = append(filters, clientFiles...)
+
+	newFiles := godash.DifferenceSubstr(localFiles, filters)
+
+	// Send the list of new files to the client
+	for _, file := range newFiles {
+		conn.Write(file)
+	}
 }
