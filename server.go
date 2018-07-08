@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -11,6 +12,7 @@ import (
 	"github.com/BrandonWade/godash"
 	"github.com/BrandonWade/synth"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 	"github.com/joho/godotenv"
 )
 
@@ -49,14 +51,22 @@ func SyncHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the list of files from the client
 	clientFiles := []string{}
 	for {
-		msg := contact.Message{}
+		msgType, msg, err := conn.Read()
+		if err != nil {
+			if ce, ok := err.(*websocket.CloseError); ok {
+				if ce.Code != websocket.CloseNormalClosure {
+					log.Println("error reading client files from connection")
+					return
+				}
+			}
+		}
 
-		conn.ReadJSON(&msg)
-		if msg.IsEmpty() {
+		data := string(msg)
+		if msgType == -1 && data == "" {
 			break
 		}
 
-		path := filepath.ToSlash(msg.Body)
+		path := filepath.ToSlash(data)
 		clientFiles = append(clientFiles, path)
 	}
 
@@ -76,5 +86,6 @@ func SyncHandler(w http.ResponseWriter, r *http.Request) {
 	// Send the list of new files to the client
 	for _, file := range newFiles {
 		conn.Write(file)
+		fmt.Println(file)
 	}
 }

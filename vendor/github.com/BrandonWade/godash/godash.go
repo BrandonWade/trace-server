@@ -21,7 +21,7 @@ func DifferenceSubstr(items, vals []string) []string {
 	diff := []string{}
 
 	for _, item := range items {
-		if !IncludesStr(vals, item) {
+		if !IncludesSubstr(vals, item) {
 			diff = append(diff, item)
 		}
 	}
@@ -29,8 +29,8 @@ func DifferenceSubstr(items, vals []string) []string {
 	return diff
 }
 
-// IncludesStr - returns a boolean indicating if items contains key
-func IncludesStr(items []string, key string) bool {
+// IncludesSubstr - returns a boolean indicating if items contains key
+func IncludesSubstr(items []string, key string) bool {
 	for _, item := range items {
 		if key == item || strings.Contains(key, item) {
 			return true

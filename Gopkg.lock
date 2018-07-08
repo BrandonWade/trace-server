@@ -5,13 +5,13 @@
   branch = "master"
   name = "github.com/BrandonWade/contact"
   packages = ["."]
-  revision = "19d04f362121225760cd5e6eaba198a9a63badb4"
+  revision = "3b56da61967a739e5d7a79d3952bba9b38f2f276"
 
 [[projects]]
   branch = "master"
   name = "github.com/BrandonWade/godash"
   packages = ["."]
-  revision = "5f0ada8d4c9eb037d8cb3ede3ffc833e21858c4f"
+  revision = "98c826452e49aa1638977f40dfeea240904cc9e9"
 
 [[projects]]
   branch = "master"
