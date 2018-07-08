@@ -17,7 +17,7 @@
   branch = "master"
   name = "github.com/BrandonWade/synth"
   packages = ["."]
-  revision = "8ec5abf4a992433f314101d4508b1085855a29c0"
+  revision = "e27c7583dd01f68c359099c1c8b3e8d8e62b9f98"
 
 [[projects]]
   name = "github.com/gorilla/context"
@@ -46,6 +46,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9daf8aff5d1ea2b79655167ded8cbffbd6e5579ad4fe40de42933a565f362ae8"
+  inputs-digest = "09eb8bc122eb06f05dd4c9ce5a9c1ab6c860d5387c51c9325e03cbe763721e7a"
   solver-name = "gps-cdcl"
   solver-version = 1

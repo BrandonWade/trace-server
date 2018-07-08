@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -18,6 +17,7 @@ import (
 
 var (
 	bufferSize int
+	syncDir    string
 )
 
 func init() {
@@ -30,6 +30,8 @@ func init() {
 	if err != nil {
 		log.Fatal("error reading buffer size")
 	}
+
+	syncDir = os.Getenv("TEST_DIR")
 }
 
 func main() {
@@ -51,7 +53,7 @@ func SyncHandler(w http.ResponseWriter, r *http.Request) {
 	// Get the list of files from the client
 	clientFiles := []string{}
 	for {
-		msgType, msg, err := conn.Read()
+		_, msg, err := conn.Read()
 		if err != nil {
 			if ce, ok := err.(*websocket.CloseError); ok {
 				if ce.Code != websocket.CloseNormalClosure {
@@ -62,7 +64,7 @@ func SyncHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		data := string(msg)
-		if msgType == -1 && data == "" {
+		if data == "" {
 			break
 		}
 
@@ -71,21 +73,25 @@ func SyncHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get the list of files from the filesystem
-	localFiles, err := synth.Scan(os.Getenv("TEST_DIR"))
+	localFiles, err := synth.Scan(syncDir)
 	if err != nil {
-		log.Fatal("error retrieving local file list")
+		log.Println("error retrieving local file list")
+		return
 	}
+
+	localFiles = synth.TrimPaths(localFiles, syncDir)
 
 	// Filter out unwanted files and files that are already on the client
 	// TODO: Add support for setting filters
 	filters := []string{"xyz"}
 	filters = append(filters, clientFiles...)
 
+	// Add an empty element to the end of the list to indicate the end
 	newFiles := godash.DifferenceSubstr(localFiles, filters)
+	newFiles = append(newFiles, "")
 
 	// Send the list of new files to the client
 	for _, file := range newFiles {
 		conn.Write(file)
-		fmt.Println(file)
 	}
 }
