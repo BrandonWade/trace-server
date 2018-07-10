@@ -38,13 +38,14 @@ func main() {
 	port := ":" + os.Getenv("TRACE_SERVER_PORT")
 
 	r := mux.NewRouter()
-	r.HandleFunc("/sync", SyncHandler)
+	r.HandleFunc("/sync", syncHandler).Methods("GET")
+	r.HandleFunc("/download", downloadHandler).Methods("POST")
 
 	http.ListenAndServe(port, r)
 }
 
-// SyncHandler - Handler for incoming sync requests
-func SyncHandler(w http.ResponseWriter, r *http.Request) {
+// syncHandler - handler for incoming sync requests
+func syncHandler(w http.ResponseWriter, r *http.Request) {
 	conn := contact.NewConnection(bufferSize)
 
 	conn.Open(&w, r)
@@ -94,4 +95,9 @@ func SyncHandler(w http.ResponseWriter, r *http.Request) {
 	for _, file := range newFiles {
 		conn.Write(file)
 	}
+}
+
+// downloadHandler - handler for uncoming file download requests
+func downloadHandler(w http.ResponseWriter, r *http.Request) {
+	// TODO: Implement
 }
