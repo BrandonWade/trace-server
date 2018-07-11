@@ -39,7 +39,7 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/sync", syncHandler).Methods("GET")
-	r.HandleFunc("/download", downloadHandler).Methods("POST")
+	r.HandleFunc("/download", downloadHandler).Methods("GET")
 
 	http.ListenAndServe(port, r)
 }
@@ -84,7 +84,7 @@ func syncHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Filter out unwanted files and files that are already on the client
 	// TODO: Add support for setting filters
-	filters := []string{"xyz"}
+	filters := []string{}
 	filters = append(filters, clientFiles...)
 
 	// Add an empty element to the end of the list to indicate the end
@@ -99,5 +99,8 @@ func syncHandler(w http.ResponseWriter, r *http.Request) {
 
 // downloadHandler - handler for uncoming file download requests
 func downloadHandler(w http.ResponseWriter, r *http.Request) {
-	// TODO: Implement
+	conn := contact.NewConnection(bufferSize)
+
+	conn.Open(&w, r)
+	defer conn.Close()
 }
