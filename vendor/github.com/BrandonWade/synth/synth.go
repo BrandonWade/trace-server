@@ -13,7 +13,11 @@ func Scan(dir string) ([]*File, error) {
 
 	err := filepath.Walk(dir, func(path string, file os.FileInfo, err error) error {
 		if !file.IsDir() {
-			files = append(files, &File{path, file})
+			files = append(files, &File{
+				Path: path,
+				Size: file.Size(),
+				File: file,
+			})
 		}
 
 		return nil
@@ -27,6 +31,17 @@ func TrimPaths(files []*File, subPath string) {
 	for _, file := range files {
 		file.Path = strings.Replace(file.Path, subPath, "", -1)
 	}
+}
+
+// GetPathSlice - returns a slice of strings containing the Path property in files
+func GetPathSlice(files []*File) []string {
+	paths := []string{}
+
+	for _, file := range files {
+		paths = append(paths, file.Path)
+	}
+
+	return paths
 }
 
 // CreateFile - creates a file and all folders along the path

@@ -12,7 +12,6 @@ import (
 	"github.com/BrandonWade/contact"
 	"github.com/BrandonWade/synth"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/websocket"
 	"github.com/joho/godotenv"
 )
 
@@ -56,25 +55,17 @@ func syncHandler(w http.ResponseWriter, r *http.Request) {
 	defer conn.Close()
 
 	// Get the list of files from the client
-	clientFiles := []string{}
+	clientFiles := []*synth.File{}
 	for {
-		_, msg, err := conn.Read()
-		if err != nil {
-			if ce, ok := err.(*websocket.CloseError); ok {
-				if ce.Code != websocket.CloseNormalClosure {
-					log.Println("error reading client files from connection")
-					return
-				}
-			}
-		}
+		file := synth.File{}
+		conn.ReadJSON(&file)
 
-		data := string(msg)
-		if data == "" {
+		if file.IsEmpty() {
 			break
 		}
 
-		path := filepath.ToSlash(data)
-		clientFiles = append(clientFiles, path)
+		file.Path = filepath.ToSlash(file.Path)
+		clientFiles = append(clientFiles, &file)
 	}
 
 	// Get the list of files from the filesystem
@@ -89,7 +80,8 @@ func syncHandler(w http.ResponseWriter, r *http.Request) {
 	// Filter out unwanted files and files that are already on the client
 	// TODO: Add support for setting filters
 	filters := []string{}
-	filters = append(filters, clientFiles...)
+	clientFilePaths := synth.GetPathSlice(clientFiles)
+	filters = append(filters, clientFilePaths...)
 
 	// Determine which files are new
 	newFiles := simpleDiff(&localFiles, &filters)
