@@ -11,13 +11,13 @@
   branch = "master"
   name = "github.com/BrandonWade/godash"
   packages = ["."]
-  revision = "98c826452e49aa1638977f40dfeea240904cc9e9"
+  revision = "7bd8f647d258e530274c39368e54e1583889b74d"
 
 [[projects]]
   branch = "master"
   name = "github.com/BrandonWade/synth"
   packages = ["."]
-  revision = "e27c7583dd01f68c359099c1c8b3e8d8e62b9f98"
+  revision = "1f2ec90e06e9c7d75b82c6c04179b0b9b283c967"
 
 [[projects]]
   name = "github.com/gorilla/context"

@@ -10,7 +10,6 @@ import (
 	"strconv"
 
 	"github.com/BrandonWade/contact"
-	"github.com/BrandonWade/godash"
 	"github.com/BrandonWade/synth"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -79,27 +78,26 @@ func syncHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get the list of files from the filesystem
-	// TODO: Retrieve other file information (e.g. size)
 	localFiles, err := synth.Scan(syncDir)
 	if err != nil {
 		log.Println("error retrieving local file list")
 		return
 	}
 
-	localFiles = synth.TrimPaths(localFiles, syncDir)
+	synth.TrimPaths(localFiles, syncDir)
 
 	// Filter out unwanted files and files that are already on the client
 	// TODO: Add support for setting filters
 	filters := []string{}
 	filters = append(filters, clientFiles...)
 
-	// Add an empty element to the end of the list to indicate the end
-	newFiles := godash.DifferenceSubstr(localFiles, filters)
-	newFiles = append(newFiles, "")
+	// Determine which files are new
+	newFiles := simpleDiff(&localFiles, &filters)
+	newFiles = append(newFiles, &synth.File{})
 
 	// Send the list of new files to the client
 	for _, file := range newFiles {
-		conn.Write(file)
+		conn.WriteJSON(file)
 	}
 }
 
