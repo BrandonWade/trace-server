@@ -137,6 +137,5 @@ func sendFile(conn *contact.Connection, file string) {
 	}
 
 	// Send an empty message to indicate the end of the file
-	// NOTE: Is this necessary? Might just be able to close the Connection instead
 	conn.Write("")
 }
